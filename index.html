@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>落樱与墨 | Sakura & Ink Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&family=Noto+Serif+SC:wght@700;900&display=swap');
+
+        :root {
+            --bg: #fffcfd;
+            --ink: #3f3f46;
+            --paper-main: #ffffff;
+            --accent-pink: #f472b6;
+            --card-shadow: rgba(0, 0, 0, 0.04);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1616;
+                --ink: #d4d4d8;
+                --paper-main: #241f1f;
+                --accent-pink: #9d174d;
+                --card-shadow: rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--ink);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background 0.6s ease;
+        }
+
+        .serif { font-family: 'Noto Serif SC', serif; }
+
+        .grid-bg {
+            background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* 焦点破框优化 */
+        .book-float {
+            transform: rotate(-3deg);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hero-container:hover .book-float {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        /* 存档卡片 */
+        .archive-card {
+            background: var(--paper-main);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            border-radius: 40px 12px;
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+        }
+        .archive-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--card-shadow);
+        }
+
+        .cover-wrapper {
+            position: relative;
+            margin: -30px auto 15px;
+            width: 80%;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            border-radius: 16px;
+            transform: rotate(-2deg);
+            transition: transform 0.5s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .archive-card:hover .cover-wrapper { transform: rotate(0deg); }
+
+        /* 奇偶交错布局控制 */
+        @media (min-width: 1024px) {
+            .grid-stagger > div:nth-child(even) { transform: translateY(40px); }
+        }
+
+        .tag-blob {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body class="grid-bg min-h-screen p-6 md:px-12 lg:px-24 antialiased">
+
+    <header class="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row items-center justify-between gap-6 pt-4">
+        <div class="relative">
+            <h1 class="text-4xl md:text-5xl font-black serif tracking-tighter leading-none">
+                落樱<span class="text-pink-500 pl-2">笔记。</span>
+            </h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="hidden sm:flex gap-3">
+                <div class="tag-blob bg-pink-100 dark:bg-pink-900/20 px-5 py-1.5 text-[10px] font-bold cursor-pointer">全部</div>
+                <div class="tag-blob border border-zinc-200 dark:border-zinc-800 px-5 py-1.5 text-[10px] font-bold cursor-pointer opacity-40">逻辑</div>
+            </div>
+            <div class="relative w-64">
+                <input type="text" placeholder="寻找记忆点..." class="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-1 outline-none focus:border-pink-500 transition-colors serif text-lg">
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto">
+        
+        <section class="hero-container mb-24 flex flex-col lg:flex-row items-center gap-12 lg:gap-24 min-h-[50vh]">
+            <div class="relative w-56 md:w-64 h-[320px] md:h-[380px] flex-shrink-0">
+                <div class="absolute inset-0 bg-pink-500/10 rounded-[40px] rotate-6 border border-pink-500/10"></div>
+                <div class="book-float relative w-full h-full bg-zinc-100 dark:bg-zinc-800 rounded-2xl shadow-xl overflow-hidden flex items-center justify-center">
+                    <span class="serif opacity-20 text-sm">COVER IMAGE</span>
+                </div>
+            </div>
+
+            <div class="flex-1 space-y-6 text-center lg:text-left">
+                <div class="inline-block px-3 py-1 bg-pink-500 text-white text-[9px] font-black tracking-widest rounded-sm transform -rotate-1">RECENTLY</div>
+                <h2 class="text-5xl md:text-7xl font-black serif tracking-tight leading-tight">架构整洁之道</h2>
+                <p class="text-lg md:text-xl opacity-60 font-medium leading-relaxed italic max-w-xl mx-auto lg:mx-0">
+                    “软件架构的终极目标是：用最小的人力成本来满足构建和维护该系统的需求。”
+                </p>
+                <div class="pt-2">
+                    <a href="notebook.html" class="inline-block bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-10 py-4 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition-transform">
+                        阅读详情 →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="pb-24">
+            <div class="flex items-baseline gap-4 mb-20">
+                <h3 class="text-3xl font-black serif">存档 / Archive</h3>
+                <div class="h-[1px] flex-1 bg-zinc-200 dark:bg-zinc-800"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-24 grid-stagger">
+                
+                <div class="archive-card group cursor-pointer pb-6" onclick="location.href='notebook.html'">
+                    <div class="cover-wrapper bg-zinc-100 dark:bg-zinc-800">
+                        <div class="w-full h-full flex items-center justify-center serif opacity-10 text-[10px]">PREVIEW</div>
+                    </div>
+                    <div class="px-6">
+                        <span class="text-[9px] font-bold text-pink-500 tracking-tighter uppercase">#技术逻辑</span>
+                        <h4 class="text-xl font-bold serif mt-1 leading-tight group-hover:text-pink-500 transition-colors">Selenium<br>自动化实践</h4>
+                        <p class="text-[9px] opacity-30 font-bold uppercase mt-3">Test Lab / 2026</p>
+                    </div>
+                </div>
+
+                <div class="archive-card group cursor-pointer pb-6" onclick="location.href='notebook.html'">
+                    <div class="cover-wrapper bg-zinc-100 dark:bg-zinc-800">
+                        <div class="w-full h-full flex items-center justify-center serif opacity-10 text-[10px]">PREVIEW</div>
+                    </div>
+                    <div class="px-6">
+                        <span class="text-[9px] font-bold text-pink-500 tracking-tighter uppercase">#心理学</span>
+                        <h4 class="text-xl font-bold serif mt-1 leading-tight group-hover:text-pink-500 transition-colors">社会心理学<br>核心笔记</h4>
+                        <p class="text-[9px] opacity-30 font-bold uppercase mt-3">David Myers</p>
+                    </div>
+                </div>
+
+                <div class="archive-card group cursor-pointer pb-6" onclick="location.href='notebook.html'">
+                    <div class="cover-wrapper bg-zinc-100 dark:bg-zinc-800">
+                        <div class="w-full h-full flex items-center justify-center serif opacity-10 text-[10px]">PREVIEW</div>
+                    </div>
+                    <div class="px-6">
+                        <span class="text-[9px] font-bold text-pink-500 tracking-tighter uppercase">#原理</span>
+                        <h4 class="text-xl font-bold serif mt-1 leading-tight group-hover:text-pink-500 transition-colors">ARM 体系结构<br>精要</h4>
+                        <p class="text-[9px] opacity-30 font-bold uppercase mt-3">Steve Furber</p>
+                    </div>
+                </div>
+
+                <div class="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[32px 12px] flex flex-col items-center justify-center gap-3 opacity-20 hover:opacity-100 hover:border-pink-500 hover:text-pink-500 transition-all cursor-pointer h-[280px]">
+                    <span class="text-4xl font-light">+</span>
+                    <span class="text-[9px] font-bold tracking-widest uppercase">New</span>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 text-center opacity-20 text-[9px] font-bold tracking-[0.8em] uppercase border-t border-zinc-100 dark:border-zinc-800">
+        Ink & Sakura Archive // 2026
+    </footer>
+
+</body>
+</html>

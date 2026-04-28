@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅后存档 | Literature & Logic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&family=Noto+Serif+SC:wght@700;900&display=swap');
+
+        :root {
+            --bg: #fffcfd;
+            --ink: #3f3f46;
+            --paper: #ffffff;
+            --accent-pink: #f472b6;
+            --ink-ghost: rgba(63, 63, 70, 0.15);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1616;
+                --ink: #d4d4d8;
+                --paper: #241f1f;
+                --accent-pink: #9d174d;
+                --ink-ghost: rgba(212, 212, 216, 0.15);
+            }
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--ink);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.6s ease;
+        }
+
+        .serif { font-family: 'Noto Serif SC', serif; }
+        .grid-bg {
+            background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        [contenteditable]:empty:before {
+            content: attr(data-placeholder);
+            color: var(--ink-ghost);
+            font-weight: 400;
+        }
+
+        .book-hero {
+            border-left: 8px solid var(--accent-pink);
+            padding-left: 3rem;
+            margin-bottom: 8rem;
+        }
+
+        .note-unit {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 6rem;
+            margin-bottom: 12rem;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .delete-unit-btn {
+            position: absolute;
+            left: -60px;
+            top: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--ink-ghost);
+            border: 1px solid var(--ink-ghost);
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .note-unit:hover .delete-unit-btn {
+            opacity: 0.5;
+            left: -48px;
+        }
+        .delete-unit-btn:hover {
+            opacity: 1 !important;
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .decoration-line {
+            width: 40px;
+            height: 2px;
+            background: var(--accent-pink);
+            margin-bottom: 2rem;
+            opacity: 0.3;
+        }
+
+        .excerpt-input {
+            font-size: 1.7rem;
+            line-height: 1.8;
+            font-weight: 700;
+            outline: none;
+            color: var(--ink);
+        }
+
+        .ghost-input {
+            width: 100%;
+            background: transparent;
+            border-bottom: 1px solid var(--ink-ghost);
+            padding: 0.6rem 0;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.4s;
+        }
+        .ghost-input:focus { border-bottom-color: var(--accent-pink); }
+
+        .label-real {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--ink);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .tag-pill {
+            background: var(--paper);
+            border: 1px solid var(--ink-ghost);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 同步状态指示器 */
+        .sync-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="grid-bg min-h-screen p-8 md:px-24 lg:px-40 antialiased">
+
+    <div class="sync-indicator" id="syncStatus">Cloud Synced</div>
+
+    <nav class="max-w-7xl mx-auto mb-24 flex justify-between items-center">
+        <a href="index.html" class="text-xs font-black tracking-widest opacity-40 hover:opacity-100 hover:text-pink-500 transition-all uppercase">
+            ← BACK TO SHELF
+        </a>
+        <div class="text-[9px] font-bold opacity-20 tracking-[0.5em]">ARCHIVE / 2026.04.26</div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto">
+        <header class="book-hero">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-[9px] font-black tracking-widest rounded uppercase">Reading</span>
+                <div class="h-[1px] w-12 bg-zinc-200"></div>
+            </div>
+            <h1 class="serif text-7xl font-black tracking-tighter leading-none mb-6">架构整洁之道</h1>
+            <p class="text-sm font-medium opacity-30 italic serif">Robert C. Martin / 读书笔记存档</p>
+        </header>
+
+        <div id="note-container">
+            </div>
+
+        <footer class="mt-40 mb-32 text-center">
+            <button onclick="addNewUnit()" class="text-[10px] font-black tracking-[0.6em] opacity-20 hover:opacity-100 uppercase transition-all">
+                + Add New Record
+            </button>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ======= 请在此处填入你的凭证 =======
+        const SUPABASE_URL = 'https://umdobvutdyxtkykarujt.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtZG9idnV0ZHl4dGt5a2FydWp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMzk1NzAsImV4cCI6MjA5MjkxNTU3MH0.DY3PiPwX983sAu2GXEHMPwuW4am2Mqfu7Bz2E1CLTcs';
+        // ===================================
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function setSyncStatus(text) {
+            document.getElementById('syncStatus').innerText = text;
+        }
+
+        // 页面启动：拉取云端数据
+        window.onload = async () => {
+            setSyncStatus("Loading Cloud Data...");
+            const { data: notes, error } = await _supabase
+                .from('notes')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                setSyncStatus("Sync Error");
+                return;
+            }
+
+            if (notes && notes.length > 0) {
+                notes.forEach(note => renderUnitUI(note));
+            } else {
+                addNewUnit(); // 首次使用自动创建一个
+            }
+            setSyncStatus("Cloud Synced");
+        };
+
+        // 渲染 UI 单元
+        function renderUnitUI(noteData) {
+            const container = document.getElementById('note-container');
+            const section = document.createElement('section');
+            section.className = 'note-unit group';
+            section.innerHTML = `
+                <button class="delete-unit-btn" title="删除此条笔记" onclick="deleteNote(this, '${noteData.id}')">×</button>
+                <div>
+                    <div class="decoration-line"></div>
+                    <span class="label-real">Excerpt / 原文摘录</span>
+                    <div contenteditable="true" 
+                         class="excerpt-input serif" 
+                         data-placeholder="在此记录文学或逻辑的片段..."
+                         onblur="saveField('${noteData.id}', 'excerpt', this.innerText)">${noteData.excerpt || ''}</div>
+                </div>
+
+                <div class="flex flex-col gap-10">
+                    <div class="bg-white/50 dark:bg-black/10 p-8 rounded-3xl border border-zinc-100 dark:border-zinc-800">
+                        <span class="label-real">Notes / 我的感悟</span>
+                        <textarea class="ghost-input min-h-[120px] leading-relaxed" 
+                                  placeholder="写下你的思考..."
+                                  onblur="saveField('${noteData.id}', 'reflection', this.value)">${noteData.reflection || ''}</textarea>
+                    </div>
+
+                    <div>
+                        <span class="label-real">Source / 章节出处</span>
+                        <input type="text" class="ghost-input" 
+                               placeholder="例如：Chapter 01"
+                               value="${noteData.source_chapter || ''}"
+                               onblur="saveField('${noteData.id}', 'source_chapter', this.value)">
+                    </div>
+
+                    <div>
+                        <span class="label-real">Tags / 标签索引</span>
+                        <div class="flex flex-wrap gap-2">
+                            ${(noteData.tags || []).map(t => `
+                                <div class="tag-pill">${t} <span class="cursor-pointer opacity-30 hover:text-pink-500 ml-1" onclick="removeTag(this, '${noteData.id}', '${t}')">×</span></div>
+                            `).join('')}
+                            <button onclick="addTag(this, '${noteData.id}')" class="tag-pill border-dashed opacity-40 hover:opacity-100">+ New Tag</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(section);
+        }
+
+        // 云端：添加新纪录
+        async function addNewUnit() {
+            setSyncStatus("Saving...");
+            const { data, error } = await _supabase
+                .from('notes')
+                .insert([{ excerpt: '', reflection: '', source_chapter: '', tags: [] }])
+                .select();
+
+            if (!error && data) {
+                renderUnitUI(data[0]);
+                setSyncStatus("Cloud Synced");
+            }
+        }
+
+        // 云端：保存字段内容
+        async function saveField(id, field, value) {
+            setSyncStatus("Syncing...");
+            const { error } = await _supabase
+                .from('notes')
+                .update({ [field]: value })
+                .eq('id', id);
+            
+            setSyncStatus(error ? "Sync Error" : "Cloud Synced");
+        }
+
+        // 云端：删除纪录
+        async function deleteNote(btn, id) {
+            if (confirm("确定要删除这条笔记吗？云端数据也将同步消失。")) {
+                setSyncStatus("Deleting...");
+                const { error } = await _supabase.from('notes').delete().eq('id', id);
+
+                if (!error) {
+                    btn.closest('.note-unit').remove();
+                    setSyncStatus("Cloud Synced");
+                }
+            }
+        }
+
+        // 标签管理
+        async function addTag(btn, id) {
+            const val = prompt("Tag Name?");
+            if(val) {
+                setSyncStatus("Updating Tags...");
+                const { data } = await _supabase.from('notes').select('tags').eq('id', id).single();
+                const newTags = [...(data.tags || []), val];
+                await _supabase.from('notes').update({ tags: newTags }).eq('id', id);
+                location.reload(); 
+            }
+        }
+
+        async function removeTag(span, id, tagText) {
+            const { data } = await _supabase.from('notes').select('tags').eq('id', id).single();
+            const newTags = data.tags.filter(t => t !== tagText);
+            await _supabase.from('notes').update({ tags: newTags }).eq('id', id);
+            span.parentElement.remove();
+        }
+    </script>
+</body>
+</html>
